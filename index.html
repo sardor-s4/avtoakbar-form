@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Avto Akbar — Ariza</title>
 
 <style>
@@ -18,7 +18,7 @@
     --text: #0A1A3B;
     --red: #FF3B30;
   }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--white); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--white); color: var(--text); min-height: 100%; display: flex; flex-direction: column; -webkit-text-size-adjust: 100%; }
 
   /* TOPBAR */
   .topbar { display: flex; align-items: center; justify-content: space-between; padding: 13px 20px; border-bottom: 1px solid var(--border); }
@@ -72,10 +72,12 @@
     border-radius: 14px;
     padding: 15px 16px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--text);
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
   }
   input::placeholder { color: #B4BDD0; }
   input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,200,0.08); background: #fff; }
@@ -83,7 +85,7 @@
   .phone-wrap { display: flex; background: var(--gray-bg); border: 1.5px solid transparent; border-radius: 14px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
   .phone-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,200,0.08); background: #fff; }
   .phone-prefix { display: flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; font-weight: 700; border-right: 1.5px solid var(--border); white-space: nowrap; flex-shrink: 0; }
-  .phone-wrap input { flex: 1; border: none; border-radius: 0; background: transparent; padding: 15px 14px; box-shadow: none !important; }
+  .phone-wrap input { flex: 1; border: none; border-radius: 0; background: transparent; padding: 15px 14px; box-shadow: none !important; font-size: 16px; }
 
   .err { border-color: var(--red) !important; }
   .err-wrap { border-color: var(--red) !important; }
@@ -180,7 +182,7 @@
   .phone-big:active { opacity: 0.75; }
 
   /* SUCCESS */
-  .overlay { display: flex; position: fixed; inset: 0; background: rgba(10,26,59,0.5); z-index: 100; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity 0.25s; }
+  .overlay { display: flex; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10,26,59,0.5); z-index: 100; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity 0.25s; }
   .overlay.show { opacity: 1; visibility: visible; }
   .success-box { position: relative; background: #fff; border-radius: 24px; padding: 36px 28px; text-align: center; width: 100%; max-width: 320px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: scale(0.85); opacity: 0; transition: transform 0.4s cubic-bezier(.22,.68,0,1.4), opacity 0.3s; }
   .overlay.show .success-box { transform: scale(1); opacity: 1; }
@@ -367,6 +369,20 @@
     if (v.length > 7) out += ' ' + v.slice(7,9);
     this.value = out;
   });
+
+  // iOS keyboard fix - blur active input on scroll to prevent layout jump
+  document.addEventListener('scroll', () => {
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT')) {
+      // don't blur on scroll
+    }
+  });
+
+  // Prevent viewport resize on keyboard open
+  const setVh = () => {
+    document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+  };
+  setVh();
+  window.addEventListener('resize', setVh);
 
   // Global timer interval
   let activeInterval = null;
