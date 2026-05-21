@@ -36,7 +36,7 @@
     will-change: transform;
   }
   .hs-slide { min-width: 100%; }
-  .hs-slide img { width: 100%; display: block; }
+  .hs-slide img { width: 100%; display: block; height: 200px; object-fit: cover; object-position: center; }
   .hs-dots {
     position: absolute;
     bottom: 8px;
@@ -422,8 +422,8 @@
 
     const payload = {
       name:   name.value.trim(),
-      phone:  '+998 ' + phone.value.trim(),
-      phone2: phone2.value.trim() ? '+998 ' + phone2.value.trim() : '',
+      phone:  "'+998 " + phone.value.trim(),
+      phone2: phone2.value.trim() ? "'+998 " + phone2.value.trim() : '',
       course: COURSE_LABELS[course.value] || course.value,
       filial: FILIAL_LABELS[filial.value] || filial.value,
       source: 'Tilda forma'
