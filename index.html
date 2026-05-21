@@ -88,8 +88,11 @@
   .err { border-color: var(--red) !important; }
   .err-wrap { border-color: var(--red) !important; }
 
-  .btn { width: 100%; background: var(--blue); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 700; border: none; border-radius: 14px; padding: 17px; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 18px rgba(21,101,200,0.3); transition: transform 0.1s; }
+  .btn { width: 100%; background: var(--blue); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 700; border: none; border-radius: 14px; padding: 17px; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 18px rgba(21,101,200,0.3); transition: transform 0.1s, background 0.3s; position: relative; overflow: hidden; }
   .btn:active { transform: scale(0.98); }
+  .btn.loading { background: #0D47A1; }
+  .btn-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   .trust { display: flex; justify-content: center; gap: 14px; margin-top: 13px; flex-wrap: wrap; }
   .trust span { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--gray-text); }
@@ -364,7 +367,8 @@
     document.getElementById('overlay').classList.remove('show');
     const btn = document.querySelector('.btn');
     btn.disabled = false;
-    btn.style.opacity = '1';
+    btn.classList.remove('loading');
+    btn.innerHTML = "Ro'yxatdan o'tish →";
     if (activeInterval) { clearInterval(activeInterval); activeInterval = null; }
     document.getElementById('sTimer').textContent = '7';
   }
@@ -413,8 +417,8 @@
 
     const btn = document.querySelector('.btn');
     btn.disabled = true;
-    btn.style.opacity = '0.6';
-    btn.textContent = 'Yuborilmoqda...';
+    btn.classList.add('loading');
+    btn.innerHTML = '<span class="btn-spinner"></span>Yuborilmoqda...';
 
     const payload = {
       name:   name.value.trim(),
@@ -428,13 +432,12 @@
     // Sheets ga yuborish
     fetch(WEBHOOK_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
-    }).catch(() => {}); // no-cors rejaga tushsa ham — ma'lumot yoziladi
+    }).catch(() => {});
 
     // Overlay ochish
-    btn.textContent = "Ro\'yxatdan o\'tish →";
+    btn.innerHTML = "Ro'yxatdan o'tish →";
     document.getElementById('overlay').classList.add('show');
     let secs = 8;
     const timerEl = document.getElementById('sTimer');
