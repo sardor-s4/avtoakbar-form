@@ -67,8 +67,8 @@
 
   input, select {
     width: 100%;
-    background: var(--gray-bg);
-    border: 1.5px solid transparent;
+    background: #fff;
+    border: 1.5px solid var(--border);
     border-radius: 14px;
     padding: 15px 16px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -78,20 +78,25 @@
     transition: border-color 0.2s, box-shadow 0.2s;
     -webkit-appearance: none;
     appearance: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  input::placeholder { color: #B4BDD0; }
-  input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,200,0.08); background: #fff; }
+  input::placeholder { color: #C0C8D8; }
+  select { color: #C0C8D8; }
+  select.filled { color: var(--text); }
+  input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,200,0.10), 0 1px 4px rgba(0,0,0,0.06); background: #fff; }
 
-  .phone-wrap { display: flex; background: var(--gray-bg); border: 1.5px solid transparent; border-radius: 14px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
-  .phone-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,200,0.08); background: #fff; }
+  .phone-wrap { display: flex; background: #fff; border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .phone-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,101,200,0.10), 0 1px 4px rgba(0,0,0,0.06); background: #fff; }
   .phone-prefix { display: flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; font-weight: 700; border-right: 1.5px solid var(--border); white-space: nowrap; flex-shrink: 0; }
   .phone-wrap input { flex: 1; border: none; border-radius: 0; background: transparent; padding: 15px 14px; box-shadow: none !important; font-size: 16px; }
 
   .err { border-color: var(--red) !important; }
   .err-wrap { border-color: var(--red) !important; }
 
-  .btn { width: 100%; background: var(--blue); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 700; border: none; border-radius: 14px; padding: 17px; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 18px rgba(21,101,200,0.3); transition: transform 0.1s, background 0.4s, box-shadow 0.4s; position: relative; overflow: hidden; }
-  .btn:active { transform: scale(0.98); }
+  .btn { width: 100%; background: var(--blue); color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 700; border: none; border-radius: 14px; padding: 17px; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 18px rgba(21,101,200,0.3); transition: transform 0.15s, background 0.4s, box-shadow 0.4s; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+  .btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(21,101,200,0.2); }
+  .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.35); transform: scale(0); animation: rippleAnim 0.5s linear; pointer-events: none; }
+  @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
   .btn.loading { background: #0D47A1; box-shadow: 0 4px 24px rgba(21,101,200,0.5); }
   .btn.success-state { background: #1a9e4a; box-shadow: 0 4px 24px rgba(26,158,74,0.4); }
   .btn-dots { display: inline-flex; align-items: center; gap: 5px; }
@@ -141,25 +146,42 @@
     gap: 10px;
     cursor: pointer;
     padding: 2px 0;
+    -webkit-tap-highlight-color: transparent;
   }
   .consent-row input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    border-radius: 5px;
-    border: 1.5px solid var(--border);
-    background: var(--gray-bg);
-    padding: 0;
-    cursor: pointer;
-    margin-top: 1px;
-    accent-color: var(--blue);
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
   }
+  .custom-check {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 7px;
+    border: 2px solid var(--border);
+    background: var(--gray-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .custom-check svg { display: none; }
+  .custom-check.checked {
+    background: var(--blue);
+    border-color: var(--blue);
+    transform: scale(0.92);
+  }
+  .custom-check.checked svg { display: block; }
   .consent-row span {
     font-size: 12px;
     color: var(--gray-text);
     line-height: 1.5;
   }
-  .consent-row.err-consent input { outline: 2px solid var(--red); }
+  .consent-row.err-consent .custom-check { border-color: var(--red); }
 
   /* PHONE BIG */
   .phone-big {
@@ -277,10 +299,15 @@
       <option value="sampi">Sampi</option>
     </select>
 
-    <label class="consent-row">
+    <div class="consent-row">
       <input type="checkbox" id="consentCheck">
+      <div class="custom-check">
+        <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+          <polyline points="1.5,5 5,8.5 11.5,1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <span>Shaxsiy ma'lumotlarim qayta ishlanishiga roziman</span>
-    </label>
+    </div>
 
     <button class="btn" onclick="submitForm()">Ro'yxatdan o'tish →</button>
   </div>
@@ -368,6 +395,42 @@
     if (v.length > 5) out += ' ' + v.slice(5,7);
     if (v.length > 7) out += ' ' + v.slice(7,9);
     this.value = out;
+  });
+
+  // Ripple effect on button
+  document.querySelector('.btn').addEventListener('touchstart', function(e) {
+    const btn = this;
+    const circle = document.createElement('span');
+    const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+    const radius = diameter / 2;
+    const rect = btn.getBoundingClientRect();
+    const touch = e.touches[0];
+    circle.style.width = circle.style.height = diameter + 'px';
+    circle.style.left = (touch.clientX - rect.left - radius) + 'px';
+    circle.style.top = (touch.clientY - rect.top - radius) + 'px';
+    circle.classList.add('ripple');
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 500);
+  }, {passive: true});
+
+  // Custom checkbox - works on all devices
+  document.querySelector('.consent-row').addEventListener('click', function(e) {
+    const cb = document.getElementById('consentCheck');
+    const box = document.querySelector('.custom-check');
+    cb.checked = !cb.checked;
+    box.classList.toggle('checked', cb.checked);
+    document.querySelector('.consent-row').classList.remove('err-consent');
+  });
+
+  // Select filled color
+  document.querySelectorAll('select').forEach(function(sel) {
+    sel.addEventListener('change', function() {
+      if (this.value !== '') {
+        this.classList.add('filled');
+      } else {
+        this.classList.remove('filled');
+      }
+    });
   });
 
   // iOS keyboard fix - blur active input on scroll to prevent layout jump
